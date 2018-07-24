@@ -1,3 +1,4 @@
+import com.squareup.moshi.Moshi
 import com.sxtanna.database.Kedis
 import com.sxtanna.database.config.KedisConfig
 import redis.clients.jedis.Jedis
@@ -23,7 +24,20 @@ object RedisTest {
         kedis.enable()
         resource = kedis.resource()
 
+        val moshi = Moshi.Builder().build()
+        val adapter = moshi.adapter(User::class.java)
+
+        val user = User(1, "cutem")
+        val decodeJson = adapter.toJson(user)
+        println(decodeJson)
+
         kedis {
+            println("----start redis-------")
+            set("user", decodeJson)
+            val json = get("user")
+            val fromJson = adapter.fromJson(json)
+            println("JSON→クラス：$fromJson")
+
             println(get("key"))
             set("Username", "Sxtanna")
             resource.expire("Username", 3)
@@ -36,6 +50,11 @@ object RedisTest {
 
             resource.rename("num", "new_num")
             println(get("new_num"))
+
+            setKey("a", "abc", 3)
+            println(get("a"))
+            Thread.sleep(5000)
+            println(get("a"))
 
             push("my_channel", "Hello! This is clientB")
 
@@ -51,3 +70,5 @@ object RedisTest {
         }
     }
 }
+
+data class User(val id: Int, val name: String)
