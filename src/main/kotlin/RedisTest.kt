@@ -1,19 +1,9 @@
 import com.squareup.moshi.Moshi
-import com.sxtanna.database.Kedis
-import com.sxtanna.database.config.KedisConfig
-import redis.clients.jedis.Jedis
-import redis.clients.jedis.JedisPubSub
 import kotlin.system.exitProcess
 
 object RedisTest {
-
-    val local_address = "127.0.0.1"
-    val server_address = "192.168.99.100"
-    val server = KedisConfig.ServerOptions(local_address, 6379)
-    val option = KedisConfig.UserOptions("redis", 0)
-    val config: KedisConfig = KedisConfig(server, option)
-    val kedis = Kedis(config)
-    lateinit var resource: Jedis
+    private val kedis = KedisUtils().kedis
+    private val resource = KedisUtils().resource
 
     /**
      * 下記コマンドでredisサーバーを起動させる
@@ -21,12 +11,8 @@ object RedisTest {
      */
     @JvmStatic fun main(args: Array<String>) {
 
-        kedis.enable()
-        resource = kedis.resource()
-
         val moshi = Moshi.Builder().build()
         val adapter = moshi.adapter(User::class.java)
-
         val user = User(1, "cutem")
         val decodeJson = adapter.toJson(user)
         println(decodeJson)
@@ -65,10 +51,7 @@ object RedisTest {
 
     fun setKey(key: String, value: String, second: Int = 0) {
         resource.set(key ,value)
-        if (second > 0) {
-            resource.expire(key, second)
-        }
+        if (second > 0) resource.setex(key, second, value)
+        else resource.set(key, value)
     }
 }
-
-data class User(val id: Int, val name: String)
