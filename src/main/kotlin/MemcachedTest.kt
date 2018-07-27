@@ -5,6 +5,7 @@ object MemcachedTest {
 
     val mcc = MemCachedClient()
 
+    // TODO　ymlから設定読み込んでる
     init {
         val servers: Array<String> = arrayOf(
             "localhost:11211"
