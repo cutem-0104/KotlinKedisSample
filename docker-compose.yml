@@ -14,12 +14,17 @@ services:
      - "11211:11211"
 
   mysql:
-    image: mysql:5.6
-    ports:
-     - "33060:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test
-      MYSQL_DATABASE: test
-    command: mysqld
+      build: ./mysql/
+      volumes:
+        - ./mysql/mysql_data:/var/lib/mysql # データの永続化
+        - ./mysql/sqls:/docker-entrypoint-initdb.d # 初期データ投入
+      environment:
+        - MYSQL_ROOT_PASSWORD=root #rootパスワードの設定
+      ports:
+       - "33060:3306"
+
+#  mysql:
+#    image: mysql:5.7
+#    ports:
+#     - "33060:3306"
+#    command: mysqld

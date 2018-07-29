@@ -3,8 +3,8 @@ import java.util.*
 
 object SqlConnection {
     internal var conn: Connection? = null
-    internal var username = "sampleuser"
-    internal var password = "sampleuser"
+    internal var username = "root"
+    internal var password = "root"
 
     @JvmStatic fun main(args: Array<String>) {
         getConnection()
@@ -17,8 +17,8 @@ object SqlConnection {
 
         try {
             stmt = conn!!.createStatement()
-            stmt!!.executeQuery("USE sampleDb;")
-            var sql = "SELECT * FROM todos;"
+            stmt!!.executeQuery("USE app;")
+            var sql = "SELECT * FROM users;"
             resultset = stmt!!.executeQuery(sql)
 
             if (stmt.execute(sql)) {
@@ -27,8 +27,7 @@ object SqlConnection {
 
             while (resultset!!.next()) {
                 println(resultset.getString("id"))
-                println(resultset.getString("title"))
-                println(resultset.getString("image_url"))
+                println(resultset.getString("name"))
             }
         } catch (ex: SQLException) {
             ex.printStackTrace()
@@ -55,15 +54,16 @@ object SqlConnection {
 
     fun getConnection() {
         val connectionProps = Properties()
-        //connectionProps.put("user", username)
-        //connectionProps.put("password", password)
+        connectionProps.put("user", username)
+        connectionProps.put("password", password)
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance()
             conn = DriverManager.getConnection(
                     "jdbc:" + "mysql" + "://" +
                             "127.0.0.1" +
                             ":" + "33060" + "/" +
-                            "")
+                            "",
+                    connectionProps)
         } catch (ex: SQLException) {
             ex.printStackTrace()
         } catch (ex: Exception) {
