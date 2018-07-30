@@ -1,7 +1,7 @@
 import java.sql.*
 import java.util.*
 
-object SqlConnection {
+object MysqlTest {
     internal var conn: Connection? = null
     internal var username = "root"
     internal var password = "root"
@@ -24,11 +24,31 @@ object SqlConnection {
             if (stmt.execute(sql)) {
                 resultset = stmt.resultSet
             }
-
-            while (resultset!!.next()) {
-                println(resultset.getString("id"))
-                println(resultset.getString("name"))
+            if (resultset.isBeforeFirst) {
+                println(Integer.toString(resultset.row) + ": resultset is before first")
             }
+            if (resultset.isAfterLast) {
+                println(Integer.toString(resultset.row) +  ": resultset is after last")
+            }
+            while (resultset!!.next()) {
+                if (resultset.isFirst()) {
+                    println(Integer.toString(resultset.row) +  ": resultset is first")
+                } else if (resultset.isLast) {
+                    println(Integer.toString(resultset.row) +  ": resultset is last")
+                }
+
+                println(resultset.getString("id") + ": " + resultset.getString("name"))
+            }
+            if (resultset.isAfterLast) {
+                println(Integer.toString(resultset.row) +  ": resultset is after last")
+            }
+            if (resultset.isBeforeFirst) {
+                println(Integer.toString(resultset.row) + ": resultset is before first")
+            }
+            if (resultset.next()) {
+                println(Integer.toString(resultset.row))
+            }
+
         } catch (ex: SQLException) {
             ex.printStackTrace()
         } finally {
