@@ -7,8 +7,12 @@ object MemcachedTest {
 
     // TODO　ymlから設定読み込んでる
     init {
+        var address = "127.0.0.1"
+        if (PlatformUtils.isWindows) {
+            address = "192.168.99.100"
+        }
         val servers: Array<String> = arrayOf(
-            "localhost:11211"
+            "$address:11211"
         )
 
         val weights: Array<Int> = arrayOf(
