@@ -76,11 +76,16 @@ object MysqlTest {
         val connectionProps = Properties()
         connectionProps.put("user", username)
         connectionProps.put("password", password)
+
+        var address = "127.0.0.1"
+        if (PlatformUtils.isWindows) {
+            address = "192.168.99.100"
+        }
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance()
             conn = DriverManager.getConnection(
                     "jdbc:" + "mysql" + "://" +
-                            "127.0.0.1" +
+                            address +
                             ":" + "33060" + "/" +
                             "",
                     connectionProps)
