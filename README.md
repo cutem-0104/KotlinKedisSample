@@ -13,6 +13,8 @@
 
 ## 事前準備
 
+Windowsの場合はdocker-compose.ymlの文字コードをShift-JISに変更する
+
 キャッシュサーバーの起動
 ```
 docker-compose build --no-cache
